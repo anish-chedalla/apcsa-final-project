@@ -1,0 +1,1 @@
+This project uses the OpenFoodFacts API to look up product information from a barcode. It returns the product name and brand using a single API call, and includes a simple Java command line interface for testing.
