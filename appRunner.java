@@ -28,7 +28,7 @@ public class appRunner {
             case 1:
                 String owner;
                 while (true) {
-                    System.out.println("Enter pantry owner name:");
+                    System.out.println("\nEnter pantry owner name:");
                     owner = scanner.nextLine().trim();
                     if (owner.isEmpty()) {
                         System.out.println("Owner name cannot be empty. Please enter a valid name.");
@@ -45,6 +45,12 @@ public class appRunner {
                 System.out.println("Pantry created for " + pantry.getOwner());
                 break;
             case 2:
+                // if there are no pantries, inform the user and return to main menu before entering selection loop
+                if (Pantry.getAllPantries() == null || Pantry.getAllPantries().isEmpty()) {
+                    System.out.println("No pantries exist. Please create a pantry first.");
+                    break;
+                }
+
                 while (true) {
                     System.out.println("Select a Pantry or Quit:");
                     Pantry.listAllOwners();
@@ -57,7 +63,7 @@ public class appRunner {
                     try {
                         selectedPantry = Pantry.findPantryByOwner(selectedOwner);
                     } catch (Exception e) {
-                        System.out.println("Pantry not found. Please try again.");
+                        System.out.println("\nPantry not found. Please try again.");
                         continue;
                     }
                     if (selectedPantry != null) {
@@ -92,96 +98,117 @@ public class appRunner {
 
 
     public static void pantryFunctions(Pantry selectedPantry, Scanner scanner) {
-        System.out.println("\nSelect a pantry function:\n1. Add Food\n2. Remove Food\n3. View Pantry Contents");
-        int choice2 = scanner.nextInt();
-        scanner.nextLine();
-        switch (choice2) {
-            case 1:
-                System.out.println("\n1. Search food by barcode\n2. Manually enter food details");
-                int subChoice = scanner.nextInt();
+        boolean inPantry = true;
+        while (inPantry) {
+            System.out.println("\nSelect a pantry function:\n1. Add Food\n2. Remove Food\n3. View Pantry Contents\n4. Back to Main Menu");
+            int choice2;
+            try {
+                choice2 = scanner.nextInt();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
                 scanner.nextLine();
-                if (subChoice == 1) {
-                    System.out.println("Enter a barcode to look up:");
-                    String barcode = scanner.nextLine().trim();
-                    FoodAPI.ProductInfo info = null;
+                continue;
+            }
+            scanner.nextLine();
+            switch (choice2) {
+                case 1:
+                    System.out.println("\n1. Search food by barcode\n2. Manually enter food details");
+                    int subChoice;
                     try {
-                        info = FoodAPI.getProductInfo(barcode, false);
+                        subChoice = scanner.nextInt();
                     } catch (Exception e) {
-                        System.out.println("Lookup failed: " + e.getMessage());
+                        System.out.println("Invalid input. Please enter 1 or 2.");
+                        scanner.nextLine();
+                        break;
                     }
-                    if (info != null && !info.getName().equalsIgnoreCase("Unknown")) {
-                        String name = info.getName();
-                        String brand = info.getBrand();
-                        System.out.println("Product Name: " + name);
-                        System.out.println("Brand: " + brand);
-                        Food newFood = new Food(info.getName(), barcode, info.getBrand(), null);
+                    scanner.nextLine();
+                    if (subChoice == 1) {
+                        System.out.println("Enter a barcode to look up:");
+                        String barcode = scanner.nextLine().trim();
+                        FoodAPI.ProductInfo info = null;
+                        try {
+                            info = FoodAPI.getProductInfo(barcode, false);
+                        } catch (Exception e) {
+                            System.out.println("Lookup failed: " + e.getMessage());
+                        }
+                        if (info != null && !info.getName().equalsIgnoreCase("Unknown")) {
+                            String name = info.getName();
+                            String brand = info.getBrand();
+                            System.out.println("Product Name: " + name);
+                            System.out.println("Brand: " + brand);
+                            Food newFood = new Food(info.getName(), barcode, info.getBrand(), null);
+                            selectedPantry.addFood(newFood);
+                            System.out.println("Food added to pantry.");
+                        } else {
+                            System.out.println("Product not found.");
+                        }
+                    } else if (subChoice == 2) {
+                        System.out.println("\nEnter food name:");
+                        String name = scanner.nextLine();
+                        System.out.println("Enter food brand:");
+                        String brand = scanner.nextLine();
+                        System.out.println("Enter food barcode:");
+                        String barcode = scanner.nextLine();
+                        Food newFood = new Food(name, barcode, brand, null);
                         selectedPantry.addFood(newFood);
                         System.out.println("Food added to pantry.");
                     } else {
-                        System.out.println("Product not found.");
+                        System.out.println("Invalid choice.");
                     }
-
-
-
-                } else if (subChoice == 2) {
-                    System.out.println("Enter food name:");
-                    String name = scanner.nextLine();
-                    System.out.println("Enter food brand:");
-                    String brand = scanner.nextLine();
-                    System.out.println("Enter food barcode:");
-                    String barcode = scanner.nextLine();
-                    Food newFood = new Food(name, barcode, brand, null);
-                    selectedPantry.addFood(newFood);
-                    System.out.println("Food added to pantry.");
-                } else {
-                    System.out.println("Invalid choice.");
-                }
-
-                break;
-            case 2:
-                // show pantry contents first (similar to case 3) so the user can pick what to remove
-                ArrayList<Food> foodsToRemove = selectedPantry.getFoodList();
-                if (foodsToRemove.isEmpty()) {
-                    System.out.println("Pantry is empty. Nothing to remove.");
                     break;
-                }
-                System.out.println("Pantry Contents:");
-                for (int i = 0; i < foodsToRemove.size(); i++) {
-                    Food f = foodsToRemove.get(i);
-                    System.out.println((i + 1) + ". " + f.getName() + " (" + f.getBrand() + ")");
-                }
-
-                System.out.println("Enter the number of the food to remove, or type the exact food name (or 'cancel'):");
-                String removeInput = scanner.nextLine().trim();
-                if (removeInput.equalsIgnoreCase("cancel")) {
-                    System.out.println("Removal cancelled.");
-                    break;
-                }
-
-                // remove by exact name entered by user
-                boolean found = false;
-                for (Food f : foodsToRemove) {
-                    if (f.getName().equalsIgnoreCase(removeInput)) {
-                        found = true;
+                case 2:
+                    // show pantry contents first (similar to case 3) so the user can pick what to remove
+                    ArrayList<Food> foodsToRemove = selectedPantry.getFoodList();
+                    if (foodsToRemove.isEmpty()) {
+                        System.out.println("Pantry is empty. Nothing to remove.");
                         break;
                     }
-                }
-                if (found) {
-                    selectedPantry.removeFood(removeInput);
-                    System.out.println("Removed: " + removeInput);
-                } else {
-                    System.out.println("No food named '" + removeInput + "' found in pantry.");
-                }
-                break;
-            case 3:
-                ArrayList <Food> allFood = selectedPantry.getFoodList();
-                 System.out.println("Pantry Contents:");
-                 for (Food food : allFood) {
-                     System.out.println("- " + food.getName() + " (" + food.getBrand() + ")");
-                 }
-                break;
-            default:
-                System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Pantry Contents:");
+                    for (int i = 0; i < foodsToRemove.size(); i++) {
+                        Food f = foodsToRemove.get(i);
+                        System.out.println((i + 1) + ". " + f.getName() + " (" + f.getBrand() + ")");
+                    }
+
+                    System.out.println("Enter the number of the food to remove, or type the exact food name (or 'cancel'):");
+                    String removeInput = scanner.nextLine().trim();
+                    if (removeInput.equalsIgnoreCase("cancel")) {
+                        System.out.println("Removal cancelled.");
+                        break;
+                    }
+
+                    // remove by exact name entered by user
+                    boolean found = false;
+                    for (Food f : foodsToRemove) {
+                        if (f.getName().equalsIgnoreCase(removeInput)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        selectedPantry.removeFood(removeInput);
+                        System.out.println("Removed: " + removeInput);
+                    } else {
+                        System.out.println("No food named '" + removeInput + "' found in pantry.");
+                    }
+                    break;
+                case 3:
+                    ArrayList <Food> allFood = selectedPantry.getFoodList();
+                    System.out.println("Pantry Contents:");
+                    if (allFood.isEmpty()) {
+                        System.out.println("Pantry is empty.");
+                    } else {
+                        for (Food food : allFood) {
+                            System.out.println("- " + food.getName() + " (" + food.getBrand() + ")");
+                        }
+                    }
+                    break;
+                case 4:
+                    System.out.println("Returning to main menu...");
+                    inPantry = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
 }
