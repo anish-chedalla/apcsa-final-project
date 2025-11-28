@@ -116,13 +116,19 @@ public class appRunner {
     scanner.close();
     }
 
-    public static void appPurpose() {
-        System.out.println("This app is designed to help people keep track of perishable foods before they go bad.");
-        System.out.println("Many foodborne illnesses come from eating food that was kept past a safe time.");
-        System.out.println("At the same time, a lot of perfectly good food gets thrown away because date labels are confusing.");
-        System.out.println("By logging what you have and when it expires, this app aims to lower the risk of food poisoning");
-        System.out.println("and reduce food waste by giving clearer reminders about when food is likely no longer safe to eat.");
-    }
+public static void appPurpose() {
+    System.out.println("This app is designed to help people keep track of perishable foods before they go bad.");
+    System.out.println("Many foodborne illnesses come from eating food that was kept past a safe time.");
+    System.out.println("At the same time, a lot of perfectly good food gets thrown away because date labels are confusing.");
+    System.out.println("By logging what you have and when it expires, this app aims to lower the risk of food poisoning");
+    System.out.println("and reduce food waste by giving clearer reminders about when food is likely no longer safe to eat.");
+    System.out.println();
+    System.out.println("The app uses three common date types to make things simpler:");
+    System.out.println("- EXPIRATION: A strict safety cutoff. If a food is past this date, it should be thrown away.");
+    System.out.println("- USE BY: A safety-focused date used for perishables. After this date, the food is no longer recommended for consumption.");
+    System.out.println("- BEST BY: A quality guideline, not a safety rule. If it is past this date, check the smell, texture, and appearance before deciding whether to eat it.");
+}
+
 
     private static LocalDate promptForExpiration(Scanner scanner) {
         while (true) {
