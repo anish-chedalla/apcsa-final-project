@@ -8,6 +8,11 @@ public class Perishable extends Food {
 		this.foodType = "Perishable";
 	}
 
+	public Perishable(String name, String barcode, String brand, LocalDate expirationDate, String expirationType) {
+		super(name, barcode, brand, expirationDate, expirationType);
+		this.foodType = "Perishable";
+	}
+
 	public String getFoodType() {
 		return foodType;
 	}

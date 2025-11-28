@@ -7,7 +7,10 @@ public class NonPerishable extends Food {
 		super(name, barcode, brand, expirationDate);
 		this.foodType = "NonPerishable";
 	}
-
+	public NonPerishable(String name, String barcode, String brand, LocalDate expirationDate, String expirationType) {
+		super(name, barcode, brand, expirationDate, expirationType);
+		this.foodType = "NonPerishable";
+	}
 	public String getFoodType() {
 		return foodType;
 	}

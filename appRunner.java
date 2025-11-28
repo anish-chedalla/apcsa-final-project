@@ -210,11 +210,10 @@ public class appRunner {
                                 String expType = promptForExpirationType(scanner);
                                 Food newFood;
                                 if (foodType.equalsIgnoreCase("Perishable")) {
-                                    newFood = new Perishable(info.getName(), barcode, info.getBrand(), expDate);
+                                    newFood = new Perishable(info.getName(), barcode, info.getBrand(), expDate, expType);
                                 } else {
-                                    newFood = new NonPerishable(info.getName(), barcode, info.getBrand(), expDate);
+                                    newFood = new NonPerishable(info.getName(), barcode, info.getBrand(), expDate, expType);
                                 }
-                                newFood = new Food(info.getName(), barcode, info.getBrand(), expDate, expType);
                                 selectedPantry.addFood(newFood);
                                 System.out.println("Food added to pantry.");
                             } else {
@@ -231,11 +230,10 @@ public class appRunner {
                         String expType = promptForExpirationType(scanner);
                         Food newFood;
                         if (foodType.equalsIgnoreCase("Perishable")) {
-                            newFood = new Perishable(name, null, brand, expDate);
+                            newFood = new Perishable(name, null, brand, expDate, expType);
                         } else {
-                            newFood = new NonPerishable(name, null, brand, expDate);
+                            newFood = new NonPerishable(name, null, brand, expDate, expType);
                         }
-                        newFood = new Food(name, null, brand, expDate, expType);
                         selectedPantry.addFood(newFood);
                         System.out.println("Food added to pantry.");
                     } else {
