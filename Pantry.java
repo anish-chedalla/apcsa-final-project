@@ -1,4 +1,13 @@
 import java.util.ArrayList;
+import java.util.Date;
+import java.lang.reflect.Method;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class Pantry {
     private ArrayList<Food> foods;
@@ -54,4 +63,55 @@ public class Pantry {
     public static void setAllPantries(ArrayList<Pantry> pantries) {
         allPantries = pantries;
     }
-}
+
+    // Delete by owner name. Returns true if deleted.
+    public static boolean deletePantryByOwner(String owner) {
+        Pantry p = findPantryByOwner(owner);
+        if (p == null) return false;
+        return deletePantry(p);
+    }
+
+    // Delete by Pantry instance. Returns true if deleted.
+    public static boolean deletePantry(Pantry pantry) {
+        synchronized (allPantries) {
+            boolean removed = allPantries.remove(pantry);
+            if (removed) {
+                if (pantry.foods != null) pantry.foods.clear();
+                pantry.owner = null;
+            }
+            return removed;
+        }
+    }
+
+    // Instance convenience method to delete this pantry.
+    public boolean delete() {
+        return deletePantry(this);
+    }
+
+    // New method: print items with expiration date and days until expiration (uses system local time)
+    public void printItemsWithExpiry() {
+        LocalDate today = LocalDate.now();
+
+        for (Food f : foods) {
+            LocalDate exp = f.getExpirationDate();
+            String name = f.getName();
+
+            if (exp == null) {
+                System.out.println(name + " - expiration unknown");
+                continue;
+            }
+
+            long days = ChronoUnit.DAYS.between(today, exp);
+
+            if (days < 0) {
+                System.out.println(name + " - expired " + (-days) + " days ago");
+            } else if (days == 0) {
+                System.out.println(name + " - expires today");
+            } else if (days == 1) {
+                System.out.println(name + " - expires in 1 day");
+            } else {
+                System.out.println(name + " - expires in " + days + " days");
+            }
+        }
+        }
+    }

@@ -25,5 +25,8 @@ public class Food {
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
-    
+    @Override
+    public String toString() {
+        return "Food{name='" + name + "', barcode='" + barcode + "', brand='" + brand + "', expirationDate=" + expirationDate + "}";
+    }
 }
