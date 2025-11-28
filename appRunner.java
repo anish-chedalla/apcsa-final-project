@@ -143,6 +143,28 @@ public class appRunner {
         }
     }
 
+    private static String promptForExpirationType(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter expiration type (Expiration, Use By, or Best By):");
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("Expiration") || input.equalsIgnoreCase("Use By") || input.equalsIgnoreCase("Best By")) {
+                return input.toUpperCase().replace(" ", "_");
+            }
+            System.out.println("Invalid type. Please enter one of: Expiration, Use By, or Best By");
+        }
+    }
+
+    private static String promptForFoodType(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter food type (Perishable or Nonperishable):");
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("Perishable") || input.equalsIgnoreCase("NonPerishable")) {
+                return input;
+            }
+            System.out.println("Invalid type. Please enter one of: Perishable or Nonperishable");
+        }
+    }
+
 
     public static void pantryFunctions(Pantry selectedPantry, Scanner scanner) {
         boolean inPantry = true;
@@ -183,8 +205,16 @@ public class appRunner {
                                 String brand = info.getBrand();
                                 System.out.println("Product Name: " + name);
                                 System.out.println("Brand: " + brand);
+                                String foodType = promptForFoodType(scanner);
                                 LocalDate expDate = promptForExpiration(scanner);
-                                Food newFood = new Food(info.getName(), barcode, info.getBrand(), expDate);
+                                String expType = promptForExpirationType(scanner);
+                                Food newFood;
+                                if (foodType.equalsIgnoreCase("Perishable")) {
+                                    newFood = new Perishable(info.getName(), barcode, info.getBrand(), expDate);
+                                } else {
+                                    newFood = new NonPerishable(info.getName(), barcode, info.getBrand(), expDate);
+                                }
+                                newFood = new Food(info.getName(), barcode, info.getBrand(), expDate, expType);
                                 selectedPantry.addFood(newFood);
                                 System.out.println("Food added to pantry.");
                             } else {
@@ -195,8 +225,17 @@ public class appRunner {
                         String name = scanner.nextLine();
                         System.out.println("Enter food brand:");
                         String brand = scanner.nextLine();
+
+                        String foodType = promptForFoodType(scanner);
                         LocalDate expDate = promptForExpiration(scanner);
-                        Food newFood = new Food(name, null, brand, expDate);
+                        String expType = promptForExpirationType(scanner);
+                        Food newFood;
+                        if (foodType.equalsIgnoreCase("Perishable")) {
+                            newFood = new Perishable(name, null, brand, expDate);
+                        } else {
+                            newFood = new NonPerishable(name, null, brand, expDate);
+                        }
+                        newFood = new Food(name, null, brand, expDate, expType);
                         selectedPantry.addFood(newFood);
                         System.out.println("Food added to pantry.");
                     } else {

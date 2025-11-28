@@ -5,12 +5,25 @@ public class Food {
     private String barcode;
     private String brand;
     private LocalDate expirationDate;
-    
+    private String expirationtype;
+
     public Food(String name, String barcode, String brand, LocalDate expirationDate) {
         this.name = name;
         this.barcode = barcode;
         this.brand = brand;
         this.expirationDate = expirationDate;
+        this.expirationtype = "expiration";
+    }
+
+    public Food(String name, String barcode, String brand, LocalDate expirationDate, String expirationtype) {
+        this(name, barcode, brand, expirationDate);
+        if (expirationtype != null) {
+            this.expirationtype = expirationtype;
+        }
+    }
+
+    public String getExpirationtype() {
+        return expirationtype;
     }
 
     public String getName() {

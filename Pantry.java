@@ -1,13 +1,7 @@
 import java.util.ArrayList;
-import java.util.Date;
-import java.lang.reflect.Method;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+
 
 public class Pantry {
     private ArrayList<Food> foods;
@@ -95,22 +89,39 @@ public class Pantry {
         for (Food f : foods) {
             LocalDate exp = f.getExpirationDate();
             String name = f.getName();
+            String type = f.getExpirationtype();
+            String foodType = "Food";
+            
+            if (f instanceof Perishable) {
+                foodType = "Perishable";
+            } else if (f instanceof NonPerishable) {
+                foodType = "NonPerishable";
+            }
 
             if (exp == null) {
-                System.out.println(name + " - expiration unknown");
+                System.out.println(name + " (" + foodType + ") - expiration unknown");
                 continue;
             }
 
             long days = ChronoUnit.DAYS.between(today, exp);
+            String prefix = "";
+
+            if (type != null && type.equals("USE_BY")) {
+                prefix = "use by ";
+            } else if (type != null && type.equals("BEST_BY")) {
+                prefix = "best by ";
+            } else {
+                prefix = "expires ";
+            }
 
             if (days < 0) {
-                System.out.println(name + " - expired " + (-days) + " days ago");
+                System.out.println(name + " (" + foodType + ") - " + prefix + "was " + (-days) + " days ago");
             } else if (days == 0) {
-                System.out.println(name + " - expires today");
+                System.out.println(name + " (" + foodType + ") - " + prefix + "today");
             } else if (days == 1) {
-                System.out.println(name + " - expires in 1 day");
+                System.out.println(name + " (" + foodType + ") - " + prefix + "in 1 day");
             } else {
-                System.out.println(name + " - expires in " + days + " days");
+                System.out.println(name + " (" + foodType + ") - " + prefix + "in " + days + " days");
             }
         }
         }
