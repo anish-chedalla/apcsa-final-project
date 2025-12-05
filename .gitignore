@@ -3,3 +3,5 @@
 *.class
 foodapiexample.java
 tester.java
+/demo
+.vscode/

@@ -90,12 +90,13 @@ public class Pantry {
             LocalDate exp = f.getExpirationDate();
             String name = f.getName();
             String type = f.getExpirationtype();
-            String foodType = "Food";
-            
+            String foodType; 
             if (f instanceof Perishable) {
                 foodType = "Perishable";
-            } else if (f instanceof NonPerishable) {
-                foodType = "NonPerishable";
+            } else if (f instanceof NonPerishable){
+                foodType = "Nonperishable";
+            } else {
+                foodType = "Food";
             }
 
             if (exp == null) {
@@ -103,26 +104,30 @@ public class Pantry {
                 continue;
             }
 
-            long days = ChronoUnit.DAYS.between(today, exp);
-            String prefix = "";
+            // Pick prefix based on type
+            String prefix = switch (type) {
+                case "USE_BY" -> "use by ";
+                case "BEST_BY" -> "best by ";
+                default -> "expires ";
+            };
 
-            if (type != null && type.equals("USE_BY")) {
-                prefix = "use by ";
-            } else if (type != null && type.equals("BEST_BY")) {
-                prefix = "best by ";
-            } else {
-                prefix = "expires ";
+            boolean isPast = exp.isBefore(today);
+            String marker = "";
+
+            // Markers:
+            // Past expiration => "!"
+            // Past best-by or use-by => "*"
+            if (isPast) {
+                if (type == null || type.equals("EXPIRATION") || type.equals("EXPIRES")) {
+                    marker = " (Expired)";   // throw away
+                } else {
+                    marker = " (Check before use)";   // caution
+                }
             }
 
-            if (days < 0) {
-                System.out.println(name + " (" + foodType + ") - " + prefix + "was " + (-days) + " days ago");
-            } else if (days == 0) {
-                System.out.println(name + " (" + foodType + ") - " + prefix + "today");
-            } else if (days == 1) {
-                System.out.println(name + " (" + foodType + ") - " + prefix + "in 1 day");
-            } else {
-                System.out.println(name + " (" + foodType + ") - " + prefix + "in " + days + " days");
-            }
-        }
+            // Print formatted
+            System.out.println(name + " (" + foodType + ") - " + prefix + exp + marker);
         }
     }
+
+}

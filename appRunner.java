@@ -16,7 +16,7 @@ public class appRunner {
     Scanner scanner = new Scanner(System.in);
     System.out.println("Welcome to the Food Tracker App");
     while (running) {
-        System.out.println("\nChoose an option:\n1. Create Pantry\n2. Delete Pantry\n3. Edit Existing Pantry\n4. Read Purpose Statement\n5. Exit");
+        System.out.println("\nChoose an option:\n1. Create Pantry\n2. Delete Pantry\n3. Edit Existing Pantry\n4. Read Purpose Statement\n5. Exit\n");
         int choice;
         try {
             choice = scanner.nextInt();
@@ -175,7 +175,7 @@ public static void appPurpose() {
     public static void pantryFunctions(Pantry selectedPantry, Scanner scanner) {
         boolean inPantry = true;
         while (inPantry) {
-            System.out.println("\nSelect a pantry function:\n1. Add Food\n2. Remove Food\n3. View Pantry Contents\n4. See Expiry Dates\n5. Back to Main Menu");
+            System.out.println("\nSelect a pantry function:\n1. Add Food\n2. Remove Food\n3. View Pantry Contents\n4. See Expiry Dates\n5. Back to Main Menu\n");
             int choice2;
             try {
                 choice2 = scanner.nextInt();
