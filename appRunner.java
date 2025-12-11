@@ -1,17 +1,20 @@
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.DateTimeException;
+
+/**
+ * The appRunner class contains the main method to run the Food Tracker App.
+ * It provides a console-based interface for users to create and manage pantries,
+ * add and remove food items, and view pantry contents and expiration dates.
+ * It also includes methods to prompt for user input and display the app's purpose statement.
+ */
 public class appRunner {
+    /**
+     * The main method to run the Food Tracker App.
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
-
-
-    // FoodAPI.ProductInfo info = FoodAPI.getProductInfo(barcode, false);
-    // if (info != null) {
-    //     String name = info.getName();
-    //     String brand = info.getBrand();
-
-    // }
     boolean running = true;
     Scanner scanner = new Scanner(System.in);
     System.out.println("Welcome to the Food Tracker App");
@@ -115,7 +118,9 @@ public class appRunner {
     }
     scanner.close();
     }
-
+/**
+ * Prints the purpose statement of the app to the console.
+ */
 public static void appPurpose() {
     System.out.println("This app is designed to help people keep track of perishable foods before they go bad.");
     System.out.println("Many foodborne illnesses come from eating food that was kept past a safe time.");
@@ -129,7 +134,11 @@ public static void appPurpose() {
     System.out.println("- BEST BY: A quality guideline, not a safety rule. If it is past this date, check the smell, texture, and appearance before deciding whether to eat it.");
 }
 
-
+    /**
+     * Prompts the user to enter an expiration date and returns it as a LocalDate.
+     * @param scanner
+     * @return
+     */
     private static LocalDate promptForExpiration(Scanner scanner) {
         while (true) {
             try {
@@ -148,7 +157,12 @@ public static void appPurpose() {
             }
         }
     }
-
+    
+    /**
+     * Prompts the user to enter an expiration type and returns it as a string.
+     * @param scanner the Scanner object for user input
+     * @return the expiration type as a string
+     */
     private static String promptForExpirationType(Scanner scanner) {
         while (true) {
             System.out.println("Enter expiration type (Expiration, Use By, or Best By):");
@@ -160,6 +174,11 @@ public static void appPurpose() {
         }
     }
 
+    /**
+     * Prompts the user to enter a food type and returns it as a string.
+     * @param scanner the Scanner object for user input
+     * @return the food type as a string
+     */
     private static String promptForFoodType(Scanner scanner) {
         while (true) {
             System.out.println("Enter food type (Perishable or Nonperishable):");
@@ -171,7 +190,11 @@ public static void appPurpose() {
         }
     }
 
-
+    /**
+     * Provides pantry functions such as adding/removing food, viewing contents, and checking expiry dates.
+     * @param selectedPantry the pantry to operate on
+     * @param scanner the Scanner object for user input
+     */
     public static void pantryFunctions(Pantry selectedPantry, Scanner scanner) {
         boolean inPantry = true;
         while (inPantry) {
